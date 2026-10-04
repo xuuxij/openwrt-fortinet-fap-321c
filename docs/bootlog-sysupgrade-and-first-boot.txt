@@ -1,0 +1,194 @@
+upgrade: Commencing upgrade. Closing all shell sessions.
+Watchdog handover: fd=3
+- watchdog -
+Watchdog does not have CARDRESET support
+Thu Jan  1 00:08:07 GMT 1970 upgrade: Sending TERM to remaining processes ...
+Thu Jan  1 00:08:11 GMT 1970 upgrade: Sending KILL to remaining processes ...
+[  498.604859] stage2 (3027): drop_caches: 3
+Thu Jan  1 00:08:17 GMT 1970 upgrade: Switching to ramdisk...
+Thu Jan  1 00:08:20 UTC 1970 upgrade: Performing system upgrade...
+1776+0 records in
+1776+0 records out
+tar: write error: Broken pipe
+[  512.964121] do_stage2 (3027): drop_caches: 3
+Unlocking loader ...
+
+Writing from <stdin> to loader ...      
+[  516.627968] do_stage2 (3027): drop_caches: 3
+Unlocking fwconcat0 ...
+
+Writing from <stdin> to fwconcat0 ...      
+Thu Jan  1 00:09:07 UTC 1970 upgrade: Upgrade completed
+Thu Jan  1 00:09[  548.966834] reboot: Restarting system
+
+
+FortiAP-321C (Jan 19 2018 - 15:23:09)
+
+Ver:04000004
+Serial number: FP321CTFxxxxxxxx
+Region code: A 
+DRAM:  256 MB
+flash size 32MB, sector count = 512
+Flash: 32 MB
+Using default environment
+
+In:    serial
+Out:   serial
+Err:   serial
+Net:   eth0: e8:1c:ba:xx:xx:x0
+eth0 up
+eth1: e8:1c:ba:xx:xx:x1
+eth1 up
+eth0, eth1
+Hit any key to stop autoboot:  4  3  2  1  0 
+## Booting image at a0440000 ...
+   Image Name:   MIPS OpenWrt Linux-6.12.94
+   Created:      2026-06-29  12:59:20 UTC
+   Image Type:   MIPS Linux Kernel Image (lzma compressed)
+   Data Size:    3323 Bytes =  3.2 kB
+   Load Address: 80060000
+   Entry Point:  80060000
+   Verifying Checksum at 0x81000040 ...OK
+   Uncompressing Kernel Image ... OK
+
+Starting kernel ...
+
+
+
+OpenWrt kernel loader for AR7XXX/AR9XXX
+Copyright (C) 2011 Gabor Juhos <juhosg@openwrt.org>
+Looking for OpenWrt image... found at 0xbf040000
+Decompressing kernel... done!
+Starting kernel at 80060000...
+
+[    0.000000] Linux version 6.12.94 (builder@buildhost) (mips-openwrt-linux-musl-gcc (OpenWrt GCC 14.3.0 r33051-f5dae5ece4) 14.3.0, GNU ld (GNU Binutils) 2.44) #0 Mon Jun 29 12:59:20 2026
+[    0.000000] printk: legacy bootconsole [early0] enabled
+[    0.000000] CPU0 revision is: 00019750 (MIPS 74Kc)
+[    0.000000] MIPS: machine is Fortinet FAP-321-C
+[    0.000000] SoC: Qualcomm Atheros QCA9558 ver 1 rev 0
+[    0.000000] Initrd not found or empty - disabling initrd
+[    0.000000] OF: reserved mem: Reserved memory: No reserved-memory node in the DT
+[    0.000000] Primary instruction cache 64kB, VIPT, 4-way, linesize 32 bytes.
+[    0.000000] Primary data cache 32kB, 4-way, VIPT, cache aliases, linesize 32 bytes
+[    0.000000] Zone ranges:
+[    0.000000]   Normal   [mem 0x0000000000000000-0x000000000fffffff]
+[    0.000000] Movable zone start for each node
+[    0.000000] Early memory node ranges
+[    0.000000]   node   0: [mem 0x0000000000000000-0x000000000fffffff]
+[    0.000000] Initmem setup node 0 [mem 0x0000000000000000-0x000000000fffffff]
+[    0.000000] Kernel command line: console=ttyS0,9600 rootfstype=squashfs,jffs2
+[    0.000000] Dentry cache hash table entries: 32768 (order: 5, 131072 bytes, linear)
+[    0.000000] Inode-cache hash table entries: 16384 (order: 4, 65536 bytes, linear)
+[    0.000000] Writing ErrCtl register=00000000
+[    0.000000] Readback ErrCtl register=00000000
+[    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 65536
+[    0.000000] mem auto-init: stack:off, heap alloc:off, heap free:off
+[    0.000000] SLUB: HWalign=32, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
+[    0.000000] RCU Tasks Trace: Setting shift to 0 and lim to 1 rcu_task_cb_adjust=1 rcu_task_cpu_ids=1.
+[    0.000000] NR_IRQS: 51
+[    0.000000] CPU clock: 720.000 MHz
+[    0.000000] clocksource: MIPS: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 5309056796 ns
+[    0.000001] sched_clock: 32 bits at 360MHz, resolution 2ns, wraps every 5965232126ns
+[    0.092742] Calibrating delay loop... 358.80 BogoMIPS (lpj=1794048)
+[    0.227646] pid_max: default: 32768 minimum: 301
+[    0.293048] Mount-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+[    0.380537] Mountpoint-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+[    0.482600] Memory: 248384K/262144K available (6770K kernel code, 600K rwdata, 1524K rodata, 1208K init, 229K bss, 12928K reserved, 0K cma-reserved)
+[    0.645477] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604462750000 ns
+[    0.763086] futex hash table entries: 256 (order: 0, 3072 bytes, linear)
+[    0.850326] pinctrl core: initialized pinctrl subsystem
+[    0.916190] NET: Registered PF_NETLINK/PF_ROUTE protocol family
+[    1.002164] clocksource: Switched to clocksource MIPS
+[    1.073695] NET: Registered PF_INET protocol family
+[    1.132350] IP idents hash table entries: 4096 (order: 3, 32768 bytes, linear)
+[    1.219844] tcp_listen_portaddr_hash hash table entries: 1024 (order: 0, 4096 bytes, linear)
+[    1.320861] Table-perturb hash table entries: 65536 (order: 6, 262144 bytes, linear)
+[    1.414509] TCP established hash table entries: 2048 (order: 1, 8192 bytes, linear)
+[    1.506171] TCP bind hash table entries: 2048 (order: 2, 16384 bytes, linear)
+[    1.591590] TCP: Hash tables configured (established 2048 bind 2048)
+[    1.668009] MPTCP token hash table entries: 512 (order: 1, 6144 bytes, linear)
+[    1.754690] UDP hash table entries: 256 (order: 0, 4096 bytes, linear)
+[    1.832839] UDP-Lite hash table entries: 256 (order: 0, 4096 bytes, linear)
+[    1.916871] NET: Registered PF_UNIX/PF_LOCAL protocol family
+[    1.984605] PCI: CLS 0 bytes, default 32
+[    2.035124] workingset: timestamp_bits=14 max_order=16 bucket_order=2
+[    2.113676] squashfs: version 4.0 (2009/01/31) Phillip Lougher
+[    2.183520] jffs2: version 2.2 (NAND) (SUMMARY) (LZMA) (RTIME) (CMODE_PRIORITY) (c) 2001-2006 Red Hat, Inc.
+[    2.306875] pinctrl-single 1804002c.pinmux: 544 pins, size 68
+[    2.381116] Serial: 8250/16550 driver, 1 ports, IRQ sharing disabled
+[    2.458216] printk: legacy console [ttyS0] disabled
+[    2.517219] 18020000.uart: ttyS0 at MMIO 0x18020000 (irq = 11, base_baud = 2500000) is a 16550A
+[    2.621410] printk: legacy console [ttyS0] enabled
+[    2.621410] printk: legacy console [ttyS0] enabled
+[    2.736034] printk: legacy bootconsole [early0] disabled
+[    2.736034] printk: legacy bootconsole [early0] disabled
+[    2.872643] 6 fixed-partitions partitions found on MTD device spi0.0
+[    2.948752] Creating 6 MTD partitions on "spi0.0":
+[    3.006036] 0x000000000000-0x000000040000 : "u-boot"
+[    3.067728] 0x000000040000-0x000001440000 : "fwconcat0"
+[    3.131587] 0x000001440000-0x000001450000 : "loader"
+[    3.192275] 0x000001450000-0x000001840000 : "fwconcat1"
+[    3.256047] 0x000001840000-0x000001ff0000 : "reserved"
+[    3.318801] 0x000001ff0000-0x000002000000 : "art"
+[    3.772666] ag71xx-legacy 19000000.eth: connected to PHY at mdio.0:05 [uid=004dd072, driver=Qualcomm Atheros AR8035]
+[    3.899338] eth0: Atheros AG71xx at 0xb9000000, irq 4, mode: rgmii-id
+[    3.976885] i2c_dev: i2c /dev entries driver
+[    4.029849] NET: Registered PF_INET6 protocol family
+[    4.094117] Segment Routing with IPv6
+[    4.137985] In-situ OAM (IOAM) with IPv6
+[    4.185005] NET: Registered PF_PACKET protocol family
+[    4.245455] 8021q: 802.1Q VLAN Support v1.8
+[    4.312491] PCI host bridge to bus 0000:00
+[    4.361493] pci_bus 0000:00: root bus resource [mem 0x10000000-0x11ffffff]
+[    4.443720] pci_bus 0000:00: root bus resource [io  0x0000]
+[    4.510387] pci_bus 0000:00: No busn resource found for root bus, will use [bus 00-ff]
+[    4.605208] pci 0000:00:00.0: [168c:003c] type 00 class 0x028000 PCIe Endpoint
+[    4.691699] pci 0000:00:00.0: BAR 0 [mem 0x00000000-0x001fffff 64bit]
+[    4.768766] pci 0000:00:00.0: ROM [mem 0x00000000-0x0000ffff pref]
+[    4.842749] pci 0000:00:00.0: supports D1
+[    4.890714] pci 0000:00:00.0: PME# supported from D0 D1 D3hot
+[    4.960601] pci_bus 0000:00: busn_res: [bus 00-ff] end is updated to 00
+[    5.039781] pci 0000:00:00.0: BAR 0 [mem 0x10000000-0x101fffff 64bit]: assigned
+[    5.127237] pci 0000:00:00.0: ROM [mem 0x10200000-0x1020ffff pref]: assigned
+[    5.212068] Concatenating MTD devices:
+[    5.256928] (0): "fwconcat0"
+[    5.291316] (1): "fwconcat1"
+[    5.325733] (2): "reserved"
+[    5.359120] into device "virtual_flash"
+[    5.405018] 1 fixed-partitions partitions found on MTD device virtual_flash
+[    5.488570] Creating 1 MTD partitions on "virtual_flash":
+[    5.553222] 0x000000000000-0x000001fa0000 : "firmware"
+[    5.621432] 2 uimage-fw partitions found on MTD device firmware
+[    5.692277] Creating 2 MTD partitions on "firmware":
+[    5.751623] 0x000000000000-0x0000002b0000 : "kernel"
+[    5.812138] 0x0000002b0000-0x000001fa0000 : "rootfs"
+[    5.872735] mtd: setting mtd8 (rootfs) as root device
+[    5.933314] 1 squashfs-split partitions found on MTD device rootfs
+[    6.007265] 0x0000006f0000-0x000001fa0000 : "rootfs_data"
+[    6.076986] clk: Disabling unused clocks
+[    6.132884] VFS: Mounted root (squashfs filesystem) readonly on device 31:8.
+[    6.221429] Freeing unused kernel image (initmem) memory: 1208K
+[    6.292235] This architecture does not have kernel memory protection.
+[    6.369290] Run /sbin/init as init process
+[    7.350471] init: Console is alive
+[    7.391448] init: - watchdog -
+[    8.912568] kmodloader: loading kernel modules from /etc/modules-boot.d/*
+[    9.069981] gpio_button_hotplug: loading out-of-tree module taints kernel.
+[    9.155336] kmodloader: done loading kernel modules from /etc/modules-boot.d/*
+[    9.252401] init: - preinit -
+[   13.732193] random: crng init done
+Cannot parse config file '/etc/fw_env.config': No such file or directory
+Failed to find NVMEM device
+Press the [f] key and hit [enter] to enter failsafe mode
+Press the [1], [2], [3] or [4] key and hit [enter] to select the debug level
+[   19.467071] eth0: link up (1000Mbps/Full duplex)
+[   19.698654] mount_root: jffs2 not ready yet, using temporary tmpfs overlay
+[   19.784907] urandom-seed: Seed file not found (/etc/urandom.seed)
+- generating board file -
+[   20.900281] eth0: link down
+[   20.947104] procd: - early -
+[   20.981852] procd: - watchdog -
+[   21.697664] procd: - watchdog -
+[   21.736094] procd: - ubus -
+[   21.876995] procd: - init -
+Please press Enter to activate this console.

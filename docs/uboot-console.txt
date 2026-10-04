@@ -1,0 +1,98 @@
+FortiAP-321C (Jan 19 2018 - 15:23:09)
+
+Ver:04000004
+Serial number: FP321CTFxxxxxxxx
+Region code: A 
+DRAM:  256 MB
+flash size 32MB, sector count = 512
+Flash: 32 MB
+Using default environment
+
+In:    serial
+Out:   serial
+Err:   serial
+Net:   eth0: e8:1c:ba:xx:xx:x0
+eth0 up
+eth1: e8:1c:ba:xx:xx:x1
+eth1 up
+eth0, eth1
+Hit any key to stop autoboot:  4 
+
+[G]:  Get OS image from TFTP server.
+[Q]:  Quit menu and continue to boot with default OS.
+[H]:  Display this list of options.
+
+Enter G,Q,or H: Enter password:*
+ 0 
+fap> help
+?       - alias for 'help'
+autoscr - run script from memory
+base    - print or set address offset
+bdinfo  - print Board Info structure
+boot    - boot default, i.e., run 'bootcmd'
+bootd   - boot default, i.e., run 'bootcmd'
+bootelf - Boot from an ELF image in memory
+bootm   - boot application image from memory
+bootp	- boot image via network using BootP/TFTP protocol
+bootvx  - Boot vxWorks from an ELF image
+cmp     - memory compare
+coninfo - print console devices and information
+cp      - memory copy
+crc32   - checksum calculation
+dhcp	- invoke DHCP client to obtain IP/boot params
+echo    - echo args to console
+erase   - erase FLASH memory
+ethreg    - S26 PHY Reg rd/wr  utility
+exit    - exit script
+flinfo  - print FLASH memory information
+go      - start application at address 'addr'
+help    - print online help
+iminfo  - print header information for application image
+itest	- return true/false on integer compare
+loadb   - load binary file over serial line (kermit mode)
+loads   - load S-Record file over serial line
+loady   - load binary file over serial line (ymodem mode)
+loop    - infinite loop on address range
+md      - memory display
+mii     - MII utility commands
+mm      - memory modify (auto-incrementing)
+mtest   - simple RAM test
+mw      - memory write (fill)
+nfs	- boot image via network using NFS protocol
+nm      - memory modify (constant address)
+pci     - list and access PCI Configuration Space
+ping	- send ICMP ECHO_REQUEST to network host
+pll [<val>] - Set to change CPU/AHB/DDR speeds
+printenv- print environment variables
+progmac - Set ethernet MAC addresses
+protect - enable or disable FLASH write protection
+rarpboot- boot image via network using RARP/TFTP protocol
+reset   - Perform RESET of the CPU
+run     - run commands in an environment variable
+saveenv - save environment variables to persistent storage
+setenv  - set environment variables
+sleep   - delay execution for some time
+sn    - print BIOS version and SN/MAC
+test    - minimal test like /bin/sh
+tftpboot- boot image via network using TFTP protocol
+unzip - unzip a memory region
+version - print monitor version
+fap> printenv
+mbu=setenv ipaddr 172.30.80.148;setenv serverip 172.30.80.62;tftpboot 81000000 ap/u-boot.bin;go 81000000;
+bootargs=console=ttyS0,9600 root=31:01 rootfstype=jffs2 init=/sbin/init mtdparts=ath-nor0:256k(u-boot),20480k(rootfs),4096k(uImage),7872k(reserved),64k(caldata)
+bootcmd=bootm 0xa0440000
+bootdelay=4
+baudrate=9600
+ethaddr=0x00:0xaa:0xbb:0xcc:0xdd:0xee
+ipaddr=192.168.1.1
+serverip=192.168.1.10
+dir=
+lu=tftp 0x80060000 ${dir}u-boot.bin&&erase 0x9f000000 +$filesize&&cp.b $fileaddr 0x9f000000 $filesize
+lf=tftp 0x80060000 ${dir}ap135${bc}-jffs2&&erase 0x9f050000 +0x630000&&cp.b $fileaddr 0x9f050000 $filesize
+lk=tftp 0x80060000 ${dir}vmlinux${bc}.lzma.uImage&&erase 0x9f680000 +$filesize&&cp.b $fileaddr 0x9f680000 $filesize
+stdin=serial
+stdout=serial
+stderr=serial
+ethact=eth0
+
+Environment size: 780/65532 bytes

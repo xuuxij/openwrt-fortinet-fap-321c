@@ -1,0 +1,357 @@
+From 73267aa30d234bc6273b57a1da51cc81ad44792d Mon Sep 17 00:00:00 2001
+From: xuuxij <20761916+xuuxij@users.noreply.github.com>
+Date: Sun, 04 Oct 2026 17:18:26 +0000
+Subject: [PATCH] ath79: add support for Fortinet FAP-321-C
+
+Fortinet FAP-321-C (FortiAP-321C) is an indoor dual-band 802.11ac
+access point with one gigabit ethernet port and 802.3af PoE.
+
+The board (silkscreen 7016A0886008) is a Senao design that is also used
+in the WatchGuard AP300, so the hardware description follows the AP300.
+The flash layout and boot flow are the same as on the Fortinet
+FAP-221-C, so partitioning, MAC address location and image format
+follow the FAP-221-C.
+
+Specifications:
+ - SoC: Qualcomm Atheros QCA9558
+ - RAM: 256 MiB DDR2
+ - Flash: 32 MiB SPI NOR (Winbond W25Q256JV)
+ - WLAN 2.4 GHz: QCA9558 WMAC, 3x3 802.11b/g/n
+ - WLAN 5 GHz: QCA9880 mini-PCIe card, 3x3 802.11a/n/ac
+ - Ethernet: 1x 10/100/1000 Mbps (AR8035-A PHY, RGMII), 802.3af PoE
+ - Power: 12 V DC jack or PoE
+ - LEDs: power, LAN (green/orange), WLAN (green/amber)
+ - Button: reset
+ - UART: populated 4-pin header J10, 3.3 V, 9600 8N1
+   pin 1 (marked with a triangle): VCC - do not connect
+   pin 2: GND, pin 3: TX, pin 4: RX (next to R175/R176)
+
+MAC addresses (same assignment as the vendor firmware):
+ - eth0: label MAC, ASCII at 0x3ff80 in the u-boot partition
+ - 2.4 GHz: label MAC + 1
+ - 5 GHz: label MAC + 9
+
+Installation:
+ 1. Connect a 3.3 V serial adapter to J10 and power on the device.
+ 2. Interrupt the boot with Ctrl+C, press "k" and enter password "1"
+    to get the "fap>" U-Boot prompt.
+ 3. Connect a TFTP server with IP 192.168.1.10 to the ethernet port
+    (U-Boot uses 192.168.1.1) and boot the initramfs image:
+      tftpboot 0x80100000 openwrt-ath79-generic-fortinet_fap-321-c-initramfs-kernel.bin
+      bootm 0x80100000
+ 4. Back up all mtd partitions.
+ 5. Copy the sysupgrade image to /tmp and run "sysupgrade -n" from the
+    serial console.
+
+Do not use the "G" option of the boot menu or the "lu", "lf" and "lk"
+U-Boot environment scripts: they write to flash without regard for the
+partition layout.
+
+The factory image follows the FAP-221-C format with "FP321C" as the
+board name expected by the vendor firmware, but it has not been tested
+with the vendor "restore" command.
+
+Return to the vendor firmware:
+Boot the initramfs image as above and write back the backups of the
+fwconcat0, loader, fwconcat1 and reserved partitions.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+---
+ .../ath79/dts/qca9558_fortinet_fap-321-c.dts  | 215 ++++++++++++++++++
+ .../generic/base-files/etc/board.d/01_leds    |   1 +
+ .../generic/base-files/etc/board.d/02_network |   1 +
+ .../base-files/lib/upgrade/platform.sh        |   3 +-
+ target/linux/ath79/image/generic.mk           |  17 ++
+ 5 files changed, 236 insertions(+), 1 deletion(-)
+ create mode 100644 target/linux/ath79/dts/qca9558_fortinet_fap-321-c.dts
+
+diff --git a/target/linux/ath79/dts/qca9558_fortinet_fap-321-c.dts b/target/linux/ath79/dts/qca9558_fortinet_fap-321-c.dts
+new file mode 100644
+index 0000000..5f45384
+--- /dev/null
++++ b/target/linux/ath79/dts/qca9558_fortinet_fap-321-c.dts
+@@ -0,0 +1,215 @@
++// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
++
++#include "qca955x.dtsi"
++
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/input/input.h>
++#include <dt-bindings/leds/common.h>
++#include <dt-bindings/mtd/partitions/uimage.h>
++
++/ {
++	compatible = "fortinet,fap-321-c", "qca,qca9558";
++	model = "Fortinet FAP-321-C";
++
++	aliases {
++		label-mac-device = &eth0;
++		led-boot = &led_power;
++		led-failsafe = &led_power;
++		led-running = &led_power;
++		led-upgrade = &led_power;
++	};
++
++	chosen {
++		bootargs = "console=ttyS0,9600";
++	};
++
++	keys {
++		compatible = "gpio-keys";
++
++		reset {
++			label = "reset";
++			gpios = <&gpio 17 GPIO_ACTIVE_LOW>;
++			debounce-interval = <60>;
++			linux,code = <KEY_RESTART>;
++		};
++	};
++
++	leds {
++		compatible = "gpio-leds";
++
++		led_power: power {
++			function = LED_FUNCTION_POWER;
++			color = <LED_COLOR_ID_GREEN>;
++			gpios = <&gpio 22 GPIO_ACTIVE_LOW>;
++			default-state = "on";
++		};
++
++		lan_data {
++			label = "orange:lan_data";
++			gpios = <&gpio 12 GPIO_ACTIVE_LOW>;
++		};
++
++		lan_link {
++			label = "green:lan_link";
++			gpios = <&gpio 13 GPIO_ACTIVE_LOW>;
++		};
++
++		wifi_amber {
++			label = "amber:wifi";
++			gpios = <&gpio 23 GPIO_ACTIVE_LOW>;
++			linux,default-trigger = "phy1tpt";
++		};
++
++		wifi_green {
++			label = "green:wifi";
++			gpios = <&gpio 19 GPIO_ACTIVE_LOW>;
++			linux,default-trigger = "phy0tpt";
++		};
++	};
++
++	virtual_flash {
++		compatible = "mtd-concat";
++
++		devices = <&fwconcat0 &fwconcat1 &fwconcat2>;
++
++		partitions {
++			compatible = "fixed-partitions";
++			#address-cells = <1>;
++			#size-cells = <1>;
++
++			partition@0 {
++				compatible = "openwrt,uimage", "denx,uimage";
++				openwrt,ih-magic = <0x73714f4b>;
++				label = "firmware";
++				reg = <0x0 0x0>;
++			};
++		};
++	};
++
++	watchdog {
++		compatible = "linux,wdt-gpio";
++		gpios = <&gpio 16 GPIO_ACTIVE_LOW>;
++		hw_algo = "toggle";
++		hw_margin_ms = <20000>;
++		always-running;
++	};
++};
++
++&spi {
++	status = "okay";
++
++	flash@0 {
++		compatible = "jedec,spi-nor";
++		reg = <0>;
++		spi-max-frequency = <40000000>;
++		broken-flash-reset;
++
++		partitions {
++			compatible = "fixed-partitions";
++			#address-cells = <1>;
++			#size-cells = <1>;
++
++			partition@0 {
++				label = "u-boot";
++				reg = <0x000000 0x040000>;
++				read-only;
++
++				nvmem-layout {
++					compatible = "fixed-layout";
++					#address-cells = <1>;
++					#size-cells = <1>;
++
++					macaddr_uboot_3ff80: mac-address@3ff80 {
++						compatible = "mac-base";
++						reg = <0x3ff80 0xc>;
++						#nvmem-cell-cells = <1>;
++					};
++				};
++			};
++
++			fwconcat0: partition@40000 {
++				label = "fwconcat0";
++				reg = <0x0040000 0x1400000>;
++			};
++
++			partition@1440000 {
++				label = "loader";
++				reg = <0x1440000 0x0010000>;
++			};
++
++			fwconcat1: partition@1450000 {
++				label = "fwconcat1";
++				reg = <0x1450000 0x03f0000>;
++			};
++
++			fwconcat2: partition@1840000 {
++				label = "reserved";
++				reg = <0x1840000 0x07b0000>;
++			};
++
++			partition@1ff0000 {
++				label = "art";
++				reg = <0x1ff0000 0x0010000>;
++				read-only;
++
++				nvmem-layout {
++					compatible = "fixed-layout";
++					#address-cells = <1>;
++					#size-cells = <1>;
++
++					cal_art_1000: calibration@1000 {
++						reg = <0x1000 0x440>;
++					};
++
++					cal_art_5000: calibration@5000 {
++						reg = <0x5000 0x844>;
++					};
++				};
++			};
++		};
++	};
++};
++
++&mdio0 {
++	status = "okay";
++
++	phy5: ethernet-phy@5 {
++		reg = <5>;
++		eee-broken-100tx;
++		eee-broken-1000t;
++	};
++};
++
++&eth0 {
++	status = "okay";
++
++	nvmem-cells = <&macaddr_uboot_3ff80 0>;
++	nvmem-cell-names = "mac-address";
++
++	phy-handle = <&phy5>;
++	phy-mode = "rgmii-id";
++
++	pll-data = <0x82000000 0x80000101 0x80001313>;
++};
++
++&wdt {
++	status = "disabled";
++};
++
++&wmac {
++	status = "okay";
++
++	nvmem-cells = <&cal_art_1000>, <&macaddr_uboot_3ff80 1>;
++	nvmem-cell-names = "calibration", "mac-address";
++};
++
++&pcie0 {
++	status = "okay";
++
++	wifi@0,0 {
++		compatible = "qcom,ath10k";
++		reg = <0x0000 0 0 0 0>;
++		nvmem-cells = <&cal_art_5000>, <&macaddr_uboot_3ff80 9>;
++		nvmem-cell-names = "calibration", "mac-address";
++	};
++};
+diff --git a/target/linux/ath79/generic/base-files/etc/board.d/01_leds b/target/linux/ath79/generic/base-files/etc/board.d/01_leds
+index 29c1198..efbb8a6 100644
+--- a/target/linux/ath79/generic/base-files/etc/board.d/01_leds
++++ b/target/linux/ath79/generic/base-files/etc/board.d/01_leds
+@@ -61,6 +61,7 @@ alfa-network,n5q)
+ 	ucidef_set_led_rssi "signal4" "SIGNAL4" "green:signal4" "wlan0" "75" "100"
+ 	;;
+ alfa-network,pi-wifi4|\
++fortinet,fap-321-c|\
+ watchguard,ap100|\
+ watchguard,ap200|\
+ watchguard,ap300)
+diff --git a/target/linux/ath79/generic/base-files/etc/board.d/02_network b/target/linux/ath79/generic/base-files/etc/board.d/02_network
+index 5f67e47..f92d153 100644
+--- a/target/linux/ath79/generic/base-files/etc/board.d/02_network
++++ b/target/linux/ath79/generic/base-files/etc/board.d/02_network
+@@ -52,6 +52,7 @@ ath79_setup_interfaces()
+ 	fortinet,fap-220-b|\
+ 	fortinet,fap-221-b|\
+ 	fortinet,fap-221-c|\
++	fortinet,fap-321-c|\
+ 	glinet,gl-ar300m-lite|\
+ 	glinet,gl-usb150|\
+ 	hak5,wifi-pineapple-nano|\
+diff --git a/target/linux/ath79/generic/base-files/lib/upgrade/platform.sh b/target/linux/ath79/generic/base-files/lib/upgrade/platform.sh
+index 77a8086..7226aac 100644
+--- a/target/linux/ath79/generic/base-files/lib/upgrade/platform.sh
++++ b/target/linux/ath79/generic/base-files/lib/upgrade/platform.sh
+@@ -69,7 +69,8 @@ platform_do_upgrade() {
+ 		;;
+ 	fortinet,fap-220-b|\
+ 	fortinet,fap-221-b|\
+-	fortinet,fap-221-c)
++	fortinet,fap-221-c|\
++	fortinet,fap-321-c)
+ 		SKIP_HASH="1"
+ 		ENV_SCRIPT="/dev/null"
+ 		IMAGE_LIST="tar tzf $1"
+diff --git a/target/linux/ath79/image/generic.mk b/target/linux/ath79/image/generic.mk
+index ee92fef..d49de37 100644
+--- a/target/linux/ath79/image/generic.mk
++++ b/target/linux/ath79/image/generic.mk
+@@ -1698,6 +1698,23 @@ define Device/fortinet_fap-221-c
+ endef
+ TARGET_DEVICES += fortinet_fap-221-c
+ 
++define Device/fortinet_fap-321-c
++  $(Device/senao_loader_okli)
++  SOC := qca9558
++  DEVICE_VENDOR := Fortinet
++  DEVICE_MODEL := FAP-321-C
++  FACTORY_IMG_NAME := FP321C-9.99-AP-build999-999999-patch99
++  DEVICE_PACKAGES := ath10k-firmware-qca988x-ct kmod-ath10k-ct
++  IMAGE_SIZE := 20480k
++  LOADER_FLASH_OFFS := 0x040000
++  IMAGE/factory.bin := append-kernel | pad-to $$$$(BLOCKSIZE) | \
++	append-rootfs | pad-rootfs | \
++	check-size | pad-to $$$$(IMAGE_SIZE) | \
++	append-loader-okli-uimage $(1) | pad-to 24576k | \
++	gzip-filename $$$$(FACTORY_IMG_NAME)
++endef
++TARGET_DEVICES += fortinet_fap-321-c
++
+ define Device/glinet_6408
+   $(Device/tplink-8mlzma)
+   SOC := ar9331
+-- 
+2.43.0
+

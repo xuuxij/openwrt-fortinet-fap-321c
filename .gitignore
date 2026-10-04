@@ -1,0 +1,6 @@
+# build outputs and anything device-specific
+*.bin
+*.img
+images/
+backup/
+mtd*.bin
